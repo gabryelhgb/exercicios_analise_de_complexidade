@@ -1,0 +1,2 @@
+# exercicios_analise_de_complexidade
+Exercícios  de uma prova da matéria Analise de Computabilidade e Complexidade de Algorítmos, algumas questões para refletir sobre a computabilidade e complexidade de alguns algoritmos, utilizando automação de testes com JUnit..
