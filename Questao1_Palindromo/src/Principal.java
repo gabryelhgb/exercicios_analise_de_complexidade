@@ -17,14 +17,14 @@ public class Principal {
 
         // Exibir resultados
         System.out.println("\n- RESULTADOS - ");
-        System.out.println("Algoritmo clássico (Palindromo): " + (resultadoAlgoritmo ? "Aceita" : "Rejeita"));
-        System.out.println("Máquina de Turing: " + (resultadoMaquinaTuring ? "Aceita" : "Rejeita"));
+        System.out.println("Algoritmo classico: " + (resultadoAlgoritmo ? "Aceita" : "Rejeita"));
+        System.out.println("Maquina de Turing: " + (resultadoMaquinaTuring ? "Aceita" : "Rejeita"));
 
         // Verificar equivalência
         if (resultadoAlgoritmo == resultadoMaquinaTuring) {
-            System.out.println("✅ Ambos os algoritmos deram o mesmo resultado (equivalentes).");
+            System.out.println("Ambos os algoritmos deram o mesmo resultado (equivalentes).");
         } else {
-            System.out.println("X Os algoritmos divergiram.");
+            System.out.println("Os algoritmos divergiram.");
         }
 
         sc.close();
