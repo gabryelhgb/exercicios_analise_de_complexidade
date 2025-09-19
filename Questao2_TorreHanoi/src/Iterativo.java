@@ -22,8 +22,12 @@ public class Iterativo {
             } else if (movimento % 3 == 2) {
                 origem = 0; destino = 2;
             } else {
-                origem = 2; destino = 1;
+            	origem = 1; destino = 2;
             }
+            
+            /*Precisa resolver esse algoritmo, a sequencia de if else está fazendo a colocar disco maior
+            Em cima de disco menor, entretanto precisamos que ele não coloque discos maiores sobre menores
+            É possível resolver, entretanto a quantidade de linhas de código aumenta, e a complexidade também*/
 
             System.out.println("Mover disco do pino " + pinos[origem] + " para o pino " + pinos[destino]);
         }
