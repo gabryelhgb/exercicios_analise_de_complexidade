@@ -1,35 +1,60 @@
+import java.util.ArrayList;
+
 public class Iterativo {
 
-    // Método iterativo que resolve as Torres de Hanói
-    public static void resolverHanoi(int quantidadeDiscos, char pinoOrigem, char pinoDestino, char pinoAuxiliar) {
-        int totalDeMovimentos = (int) (Math.pow(2, quantidadeDiscos) - 1);
+    public static void resolverHanoi(int quantidadeDiscos, char nomeOrigem, char nomeDestino, char nomeAuxiliar) {
+        //três listas para representar os três pinos
+        ArrayList<Integer> origem = new ArrayList<>();
+        ArrayList<Integer> destino = new ArrayList<>();
+        ArrayList<Integer> auxiliar = new ArrayList<>();
 
-        // Se a quantidade de discos for par, inverte destino e auxiliar
-        if (quantidadeDiscos % 2 == 0) {
-            char temporario = pinoDestino;
-            pinoDestino = pinoAuxiliar;
-            pinoAuxiliar = temporario;
+        // Adicionamos os discos no pino de origem, do maior (embaixo) para o menor (em cima)
+        for (int i = quantidadeDiscos; i >= 1; i--) {
+            origem.add(i);
         }
 
-        // Representação dos pinos em um array
-        char[] pinos = {pinoOrigem, pinoDestino, pinoAuxiliar};
+        // Calculamos o número total de movimentos necessários usando 2^n - 1; se forem 3 discos daria 8 - 1 = 7 movimentos
+        int totalDeMovimentos = (1 << quantidadeDiscos) - 1;
 
+        // Se o número de discos for par, trocamos o destino com o auxiliar
+        // Isso é necessário porque a ordem dos movimentos muda quando o número de discos é par
+        if (quantidadeDiscos % 2 == 0) {
+            ArrayList<Integer> temporario = destino;
+            destino = auxiliar;
+            auxiliar = temporario;
+
+            char tempChar = nomeDestino;
+            nomeDestino = nomeAuxiliar;
+            nomeAuxiliar = tempChar;
+        }
+        // Executamos os movimentos um por um
         for (int movimento = 1; movimento <= totalDeMovimentos; movimento++) {
-            int origem, destino;
-
+            // A cada movimento, decidimos quais pinos vão interagir:
             if (movimento % 3 == 1) {
-                origem = 0; destino = 1;
+                mover(origem, destino, nomeOrigem, nomeDestino); //movimento 1
             } else if (movimento % 3 == 2) {
-                origem = 0; destino = 2;
+                mover(origem, auxiliar, nomeOrigem, nomeAuxiliar); //movimento 2
             } else {
-            	origem = 1; destino = 2;
+                mover(auxiliar, destino, nomeAuxiliar, nomeDestino); //movimento 3
             }
-            
-            /*Precisa resolver esse algoritmo, a sequencia de if else está fazendo a colocar disco maior
-            Em cima de disco menor, entretanto precisamos que ele não coloque discos maiores sobre menores
-            É possível resolver, entretanto a quantidade de linhas de código aumenta, e a complexidade também*/
+        }
+    }
+    // realiza o movimento entre dois pinos, respeitando a regra de nunca colocar disco maior sobre disco menor
+    private static void mover(ArrayList<Integer> pinoOrigem, ArrayList<Integer> pinoDestino, char nomeOrigem, char nomeDestino) {
+        // Verificamos o disco no topo de cada pino
+        // Se o pino estiver vazio, usamos um valor bem grande (Integer.MAX_VALUE) para evitar erro
+        int topoOrigem = pinoOrigem.isEmpty() ? Integer.MAX_VALUE : pinoOrigem.get(pinoOrigem.size() - 1);
+        int topoDestino = pinoDestino.isEmpty() ? Integer.MAX_VALUE : pinoDestino.get(pinoDestino.size() - 1);
 
-            System.out.println("Mover disco do pino " + pinos[origem] + " para o pino " + pinos[destino]);
+        // Se o disco da origem for menor que o da destino, podemos mover
+        if (topoOrigem < topoDestino) {
+            // Remove o disco do topo da origem e adiciona no destino
+            pinoDestino.add(pinoOrigem.remove(pinoOrigem.size() - 1));
+            System.out.println("Mover disco do pino " + nomeOrigem + " para o pino " + nomeDestino);
+        } else {
+            // Caso contrário, movemos o disco do destino para a origem
+            pinoOrigem.add(pinoDestino.remove(pinoDestino.size() - 1));
+            System.out.println("Mover disco do pino " + nomeDestino + " para o pino " + nomeOrigem);
         }
     }
 }
