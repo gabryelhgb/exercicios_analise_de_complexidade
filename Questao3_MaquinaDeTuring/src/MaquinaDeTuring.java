@@ -162,7 +162,7 @@ public class MaquinaDeTuring {
         MaquinaDeTuring mt = new MaquinaDeTuring("q0", finais);
 
         /* Lógica da Linguagem 2:
-         * Emparelhar a↔c e b↔d
+         * Emparelhar a=c e b=d
          * Aceita se quantidade de a=c e b=d
          */
         mt.adicionarTransicao("q0", 'a', "q1", 'X', 'R');
