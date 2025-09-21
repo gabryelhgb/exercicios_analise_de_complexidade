@@ -37,7 +37,7 @@ Exemplos válidos:
 Exemplo inválido:  
 - `aa bb` (m=2, n=2)
 
-![Exemplo Linguagem 1](linguagem1.png)
+![Linguagem1](Linguagem1.png)
 
 **Linguagem 2:** `{a^n b^k c^n d^k | n, k ≥ 0}`  
 Exemplos válidos:  
@@ -48,7 +48,7 @@ Exemplos válidos:
 Exemplo inválido:  
 - `aabccdd` (n=2, k=1, n≠c ou k≠d)
 
-![Exemplo Linguagem 2](linguagem2.png)
+![Linguagem2](Linguagem2.png)
 
 ---
 
