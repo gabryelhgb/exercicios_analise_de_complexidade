@@ -57,71 +57,50 @@ public class MaquinaDeTuring {
         transicoesDoEstado.put(simboloLido,
                 new Transicao(estadoDestino, simboloEscrever, direcao));
     }
-
+    
+    
     // Executa a máquina de Turing em uma entrada fornecida
     public boolean executar(String entrada) {
-        // Inicializa a fita com os símbolos da entrada
         List<Character> fita = new ArrayList<>();
         for (char c : entrada.toCharArray()) {
             fita.add(c);
         }
+        
         /* entrada.toCharArray() -> converte a String entrada em um array de caracteres.
          * O for (char c : ...) percorre cada caractere da entrada, um por um.
          * A cada iteração, c recebe o caractere atual. 
          * Ou seja, cada caractere da string de entrada é colocado em uma célula da fita da MT.*/
+        
+        fita.add('_'); // espaço em branco no fim da fita
 
-        // Adiciona um espaço em branco no fim da fita (símbolo vazio)
-        fita.add('_');
-
-        int posicaoCabecote = 0; // posição inicial do cabeçote de leitura
+        int posicaoCabecote = 0;
         String estadoAtual = estadoInicial;
 
         while (true) {
-            // Se o cabeçote sair da fita para a esquerda, adicionamos um espaço
             if (posicaoCabecote < 0) {
                 fita.add(0, '_');
                 posicaoCabecote = 0;
             }
-            // Se o cabeçote ultrapassar o tamanho da fita, adicionamos espaço no fim
             if (posicaoCabecote >= fita.size()) {
                 fita.add('_');
             }
 
             char simboloAtual = fita.get(posicaoCabecote);
-
-            // Recupera as transições para o estado atual
             Map<Character, Transicao> transicoesDoEstado = funcaoTransicao.get(estadoAtual);
 
-            if (transicoesDoEstado == null) {
-                // Se não existe nenhuma transição para este estado -> a máquina para
-                break;
-            }
-
+            if (transicoesDoEstado == null) break;
             Transicao transicao = transicoesDoEstado.get(simboloAtual);
-            // Está abrindo o Map que contém as transições e está procurando o simbolo atual
+            if (transicao == null) break;
 
-            if (transicao == null) {
-                // Se não há transição definida para este símbolo → a máquina para
-                break;
-            }
-
-            // Executa a transição:
-            // 1. Escreve o símbolo na fita
             fita.set(posicaoCabecote, transicao.simboloEscrever);
-
-            // 2. Atualiza o estado atual
             estadoAtual = transicao.estadoDestino;
 
-            // 3. Move o cabeçote
-            if (transicao.direcao == 'R') {
-                posicaoCabecote++;
-            } else if (transicao.direcao == 'L') {
-                posicaoCabecote--;
-            }
+            if (transicao.direcao == 'R') posicaoCabecote++;
+            else if (transicao.direcao == 'L') posicaoCabecote--;
         }
 
-        // A palavra é aceita se a máquina parou em um estado final
-        return estadosFinais.contains(estadoAtual);
+        // Agora, aceita apenas se terminou em "aceita"
+        return estadoAtual.equals("aceita");
     }
 
     // ===================== Inicialização Linguagem 1 =====================
@@ -129,6 +108,8 @@ public class MaquinaDeTuring {
         Set<String> finais = new HashSet<>();
         finais.add("aceita");
         finais.add("rejeita");
+        finais.add("q5");
+        
         MaquinaDeTuring mt = new MaquinaDeTuring("q0", finais);
 
         /* Lógica da Linguagem 1:
@@ -136,20 +117,45 @@ public class MaquinaDeTuring {
          * Caso não consiga emparelhar a quantidade de 'a's e 'b's -> aceita
          * Caso consiga -> rejeita
          */
-        mt.adicionarTransicao("q0", 'a', "q1", 'X', 'R');
-        mt.adicionarTransicao("q0", 'b', "q2", 'Y', 'R');
-        mt.adicionarTransicao("q0", 'X', "q0", 'X', 'R');
-        mt.adicionarTransicao("q0", 'Y', "q0", 'Y', 'R');
-        mt.adicionarTransicao("q0", '_', "rejeita", '_', 'R');
+        
+        //Estado atual -> Simbolo lido -> Próximo estado -> Simbolo escrito -> Direção
+        
+        // Transições do estado q0
+        mt.adicionarTransicao("q0", 'y', "q0", 'y', 'R');
+        mt.adicionarTransicao("q0", 'x', "q0", 'x', 'R');
+        mt.adicionarTransicao("q0", 'a', "q1", 'x', 'R');
+        mt.adicionarTransicao("q0", 'b', "q2", 'y', 'R');
+        mt.adicionarTransicao("q0", '_', "q3", '_', 'R');
 
+        // Transições do estado q1
+        mt.adicionarTransicao("q1", 'x', "q1", 'x', 'R');
+        mt.adicionarTransicao("q1", 'y', "q1", 'y', 'R');
         mt.adicionarTransicao("q1", 'a', "q1", 'a', 'R');
-        mt.adicionarTransicao("q1", 'b', "q0", 'Y', 'R');
-        mt.adicionarTransicao("q1", 'X', "q1", 'X', 'R');
-        mt.adicionarTransicao("q1", 'Y', "q1", 'Y', 'R');
-        mt.adicionarTransicao("q1", '_', "aceita", '_', 'R');
+        mt.adicionarTransicao("q1", 'b', "q4", 'y', 'L');
+        mt.adicionarTransicao("q1", '_', "q5", '_', 'R');
 
+        // Transições do estado q2
+        mt.adicionarTransicao("q2", 'y', "q2", 'y', 'R');
+        mt.adicionarTransicao("q2", 'x', "q2", 'x', 'R');
         mt.adicionarTransicao("q2", 'b', "q2", 'b', 'R');
-        mt.adicionarTransicao("q2", '_', "aceita", '_', 'R');
+        mt.adicionarTransicao("q2", 'a', "q4", 'x', 'L');
+        mt.adicionarTransicao("q2", '_', "q5", '_', 'R');
+
+        // Transição do estado q3
+        mt.adicionarTransicao("q3", 'y', "q3", 'y', 'L');
+        mt.adicionarTransicao("q3", 'x', "q3", 'x', 'L');
+        mt.adicionarTransicao("q3", 'b', "q5", 'b', 'R');
+        mt.adicionarTransicao("q3", 'a', "q5", 'a', 'R');
+
+        // Transições do estado q4
+        mt.adicionarTransicao("q4", 'y', "q4", 'y', 'L');
+        mt.adicionarTransicao("q4", 'x', "q4", 'x', 'L');
+        mt.adicionarTransicao("q4", 'b', "q4", 'b', 'L');
+        mt.adicionarTransicao("q4", 'a', "q4", 'a', 'L');
+        mt.adicionarTransicao("q4", '_', "q0", '_', 'R');
+
+        // Transições do estado q5
+        mt.adicionarTransicao("q5", '_', "aceita", '_', 'R');
 
         return mt;
     }
@@ -159,39 +165,82 @@ public class MaquinaDeTuring {
         Set<String> finais = new HashSet<>();
         finais.add("aceita");
         finais.add("rejeita");
+        finais.add("q3");
         MaquinaDeTuring mt = new MaquinaDeTuring("q0", finais);
 
         /* Lógica da Linguagem 2:
          * Emparelhar a=c e b=d
          * Aceita se quantidade de a=c e b=d
          */
-        mt.adicionarTransicao("q0", 'a', "q1", 'X', 'R');
-        mt.adicionarTransicao("q0", 'b', "q3", 'Y', 'R');
-        mt.adicionarTransicao("q0", 'X', "q0", 'X', 'R');
-        mt.adicionarTransicao("q0", 'Y', "q0", 'Y', 'R');
-        mt.adicionarTransicao("q0", '_', "aceita", '_', 'R');
+        mt.adicionarTransicao("q0", 'x', "q0", 'x', 'R');
+        mt.adicionarTransicao("q0", 'y', "q0", 'y', 'R');
+        mt.adicionarTransicao("q0", 'b', "q0", 'b', 'R');
+        mt.adicionarTransicao("q0", 'd', "q0", 'd', 'R');
+        mt.adicionarTransicao("q0", 'a', "q1", 'x', 'R');
+        mt.adicionarTransicao("q0", 'c', "q2", 'y', 'R');
+        mt.adicionarTransicao("q0", '_', "q10", '_', 'L');
 
-        mt.adicionarTransicao("q1", 'c', "q2", 'X', 'L');
-        mt.adicionarTransicao("q1", 'a', "q1", 'a', 'R');
+        mt.adicionarTransicao("q1", 'd', "q1", 'd', 'R');
         mt.adicionarTransicao("q1", 'b', "q1", 'b', 'R');
-        mt.adicionarTransicao("q1", 'X', "q1", 'X', 'R');
-        mt.adicionarTransicao("q1", 'Y', "q1", 'Y', 'R');
-        mt.adicionarTransicao("q1", '_', "rejeita", '_', 'R');
+        mt.adicionarTransicao("q1", 'y', "q1", 'y', 'R');
+        mt.adicionarTransicao("q1", 'x', "q1", 'x', 'R');
+        mt.adicionarTransicao("q1", 'a', "q1", 'a', 'R');
+        mt.adicionarTransicao("q1", 'c', "q4", 'y', 'L');
 
-        mt.adicionarTransicao("q2", 'a', "q2", 'a', 'L');
-        mt.adicionarTransicao("q2", 'b', "q2", 'b', 'L');
-        mt.adicionarTransicao("q2", 'X', "q0", 'X', 'R');
-        mt.adicionarTransicao("q2", 'Y', "q2", 'Y', 'L');
+        mt.adicionarTransicao("q2", 'd', "q2", 'd', 'R');
+        mt.adicionarTransicao("q2", 'b', "q2", 'b', 'R');
+        mt.adicionarTransicao("q2", 'c', "q2", 'c', 'R');
+        mt.adicionarTransicao("q2", 'y', "q2", 'y', 'R');
+        mt.adicionarTransicao("q2", 'x', "q2", 'x', 'R');
+        mt.adicionarTransicao("q2", 'a', "q4", 'x', 'L');
 
-        mt.adicionarTransicao("q3", 'b', "q4", 'Y', 'R');
-        mt.adicionarTransicao("q3", 'Y', "q3", 'Y', 'R');
+        mt.adicionarTransicao("q3", '_', "aceita", '_', 'R');
 
-        mt.adicionarTransicao("q4", 'd', "q5", 'Y', 'L');
-        mt.adicionarTransicao("q4", 'b', "q4", 'b', 'R');
+        mt.adicionarTransicao("q4", 'd', "q4", 'd', 'L');
+        mt.adicionarTransicao("q4", 'b', "q4", 'b', 'L');
+        mt.adicionarTransicao("q4", 'y', "q4", 'y', 'L');
+        mt.adicionarTransicao("q4", 'c', "q4", 'c', 'L');
+        mt.adicionarTransicao("q4", 'a', "q4", 'a', 'L');
+        mt.adicionarTransicao("q4", 'x', "q4", 'x', 'L');
+        mt.adicionarTransicao("q4", '_', "q0", '_', 'R');
 
-        mt.adicionarTransicao("q5", 'b', "q5", 'b', 'L');
-        mt.adicionarTransicao("q5", 'Y', "q3", 'Y', 'R');
-        mt.adicionarTransicao("q5", '_', "aceita", '_', 'R');
+        mt.adicionarTransicao("q5", 'y', "q5", 'y', 'R');
+        mt.adicionarTransicao("q5", 'x', "q5", 'x', 'R');
+        mt.adicionarTransicao("q5", 'b', "q5", 'b', 'R');
+        mt.adicionarTransicao("q5", 'k', "q5", 'k', 'R');
+        mt.adicionarTransicao("q5", 'l', "q5", 'l', 'R');
+        mt.adicionarTransicao("q5", 'd', "q6", 'l', 'L');
+        
+        mt.adicionarTransicao("q6", 'y', "q6", 'y', 'L');
+        mt.adicionarTransicao("q6", 'x', "q6", 'x', 'L');
+        mt.adicionarTransicao("q6", 'd', "q6", 'd', 'L');
+        mt.adicionarTransicao("q6", 'b', "q6", 'b', 'L');
+        mt.adicionarTransicao("q6", 'l', "q6", 'l', 'L');
+        mt.adicionarTransicao("q6", 'k', "q6", 'k', 'L');
+        mt.adicionarTransicao("q6", '_', "q8", '_', 'R');
+        
+        
+        mt.adicionarTransicao("q7", 'y', "q7", 'y', 'R');
+        mt.adicionarTransicao("q7", 'x', "q7", 'x', 'R');
+        mt.adicionarTransicao("q7", 'd', "q7", 'd', 'R');
+        mt.adicionarTransicao("q7", 'l', "q7", 'l', 'R');
+        mt.adicionarTransicao("q7", 'k', "q7", 'k', 'R');
+        mt.adicionarTransicao("q7", 'b', "q6", 'k', 'L');
+        
+        mt.adicionarTransicao("q8", 'y', "q8", 'y', 'R');
+        mt.adicionarTransicao("q8", 'x', "q8", 'x', 'R');
+        mt.adicionarTransicao("q8", 'l', "q8", 'l', 'R');
+        mt.adicionarTransicao("q8", 'k', "q8", 'k', 'R');
+        mt.adicionarTransicao("q8", 'b', "q5", 'k', 'R');
+        mt.adicionarTransicao("q8", '_', "q3", '_', 'R');
+        
+        mt.adicionarTransicao("q10", 'y', "q10", 'y', 'L');
+        mt.adicionarTransicao("q10", 'x', "q10", 'x', 'L');
+        mt.adicionarTransicao("q10", 'd', "q10", 'd', 'L');
+        mt.adicionarTransicao("q10", 'c', "q10", 'c', 'L');
+        mt.adicionarTransicao("q10", 'b', "q10", 'b', 'L');
+        mt.adicionarTransicao("q10", 'a', "q10", 'a', 'L');
+        mt.adicionarTransicao("q10", '_', "q8", '_', 'R');
 
         return mt;
     }

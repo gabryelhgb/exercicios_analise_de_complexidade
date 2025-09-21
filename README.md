@@ -27,6 +27,29 @@ Este projeto reúne exercícios práticos de Análise de Computabilidade e Compl
   - **Linguagem 2:** `{a^n b^k c^n d^k | n, k ≥ 0}`
 - Verificação da decidibilidade das linguagens por meio de testes automatizados.
 
+#### Exemplos ilustrativos das linguagens
+
+**Linguagem 1:** `{a^m b^n | m ≠ n}`  
+Exemplos válidos:  
+- `aabbb` (m=2, n=3)  
+- `aaa` (m=3, n=0)  
+- `bb` (m=0, n=2)  
+Exemplo inválido:  
+- `aa bb` (m=2, n=2)
+
+![Exemplo Linguagem 1](linguagem1.png)
+
+**Linguagem 2:** `{a^n b^k c^n d^k | n, k ≥ 0}`  
+Exemplos válidos:  
+- `ab cd` (n=1, k=1)  
+- `aabbccdd` (n=2, k=2)  
+- `ccdd` (n=0, k=2)  
+- `aacc` (n=2, k=0)  
+Exemplo inválido:  
+- `aabccdd` (n=2, k=1, n≠c ou k≠d)
+
+![Exemplo Linguagem 2](linguagem2.png)
+
 ---
 
 O projeto utiliza **JUnit** para automação dos testes, garantindo a confiabilidade dos algoritmos implementados. Cada exercício é acompanhado de análise teórica e prática sobre computabilidade, decidibilidade e complexidade.
