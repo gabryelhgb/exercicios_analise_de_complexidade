@@ -11,7 +11,7 @@ public class Main {
         boolean continuar = true;
         while (continuar) {
             // ==================== Linguagem 1 ====================
-            System.out.println("Linguagem 1: { a^m b^n | m ≠ n }");
+            System.out.println("Linguagem 1: { a^m b^n | m != n }");
             System.out.println("Digite a palavra para testar na Linguagem 1:");
             String entradaL1 = scanner.nextLine();
 
@@ -23,7 +23,7 @@ public class Main {
             }
 
             // ==================== Linguagem 2 ====================
-            System.out.println("\nLinguagem 2: { a^n b^k c^n d^k | n,k ≥ 0 }");
+            System.out.println("\nLinguagem 2: { a^n b^k c^n d^k | n,k >= 0 }");
             System.out.println("Digite a palavra para testar na Linguagem 2:");
             String entradaL2 = scanner.nextLine();
 
